@@ -108,14 +108,15 @@ Implement schema in SQL Server with correct data types, constraints, indexes, an
 
 ---
 
-# Repository Structure
+```text
 📦 sports-data-warehouse
-┣ 📂 bronze
-┣ 📂 silver
-┣ 📂 gold
-┣ 📂 sql_scripts
-┣ 📂 documentation
-┣ 📄 README.md
+ ┣ 📂 bronze
+ ┣ 📂 silver
+ ┣ 📂 gold
+ ┣ 📂 sql_scripts
+ ┣ 📂 documentation
+ ┣ 📄 README.md
+```
 
 # Key Features of This Project
 
