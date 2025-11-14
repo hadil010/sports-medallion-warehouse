@@ -1,114 +1,155 @@
-## Sports Data Warehouse Project – Medallion Architecture
-
-### Business Context
-
-AdventureWorks Sports is a mid-sized retailer specializing in bicycles, helmets, and sportswear, operating across multiple regions.  
-The company’s data was fragmented across sales records, customer spreadsheets, and product lists, making it difficult to monitor performance and forecast demand.  
-
-To overcome this, the analytics team designed and implemented a **modern data warehouse** using the **Medallion Architecture** framework.  
-The goal was to unify data from multiple sources, automate data transformation, and deliver actionable insights through SQL-based modeling and Power BI dashboards.  
+# Sports Retail Data Warehouse
+Medallion Architecture • SQL Server • Data Engineering Project
 
 ---
 
-## Project Overview
+## Project Summary
 
-This project represents a real-world implementation of a **data warehousing and analytics pipeline** built on **SQL Server**.  
-It covers the entire lifecycle — from raw data ingestion to business-ready insights.  
-The system consolidates operational and customer datasets, ensuring clean, consistent, and analytics-optimized data for decision-making.
+This project is an end to end data warehouse built for a fictional sports retail business.  
+The objective was to combine customer, sales, product, and order data from CRM and ERP systems into a unified, structured warehouse designed for reporting and analytics.
 
-The data pipeline is structured into three layers following the **Medallion Architecture** pattern.
+The solution follows the Medallion Architecture (Bronze → Silver → Gold) and demonstrates practical data engineering concepts including data ingestion, data cleaning, transformation, standardization, and dimensional modeling using SQL Server.
 
----
-
-## Data Architecture
-
-### Bronze Layer – Raw Data
-
-- Stores all source CSV and Excel files exactly as received from business operations.  
-- Acts as a historical archive for traceability and auditing.  
-- No transformation or filtering is applied at this stage.  
-
-### Silver Layer – Cleaned and Standardized Data
-
-- Performs data cleansing, validation, and standardization.  
-- Splits product names into structured fields such as model, color, and size.  
-- Resolves missing values, removes duplicates, and enforces data integrity.  
-- Creates a unified and trusted dataset for analytical processing.  
-
-### Gold Layer – Business-Ready Models
-
-- Converts standardized Silver data into **fact** and **dimension** tables organized in a **star schema**.  
-- Provides business metrics and KPIs on product sales, trends, and customer behavior.  
-- Optimized for analytical queries, reporting, and dashboard visualization.  
+This project highlights my ability to design pipelines, apply business rules, create reliable data models, and deliver a complete analytical data product.
 
 ---
 
-## Project Goals
+# Architecture Overview
 
-- Build a scalable SQL Server–based data warehouse for retail sports data.  
-- Automate ETL processes that move data through Bronze, Silver, and Gold layers.  
-- Establish clear data models and naming conventions.  
-- Deliver high-quality analytics and insights via Power BI dashboards.  
 
----
+Below is the architecture diagram for this project:
 
-## Data Sources
+![Alt Text](https://github.com/hadil010/sports-medallion-warehouse/blob/main/documents/data%20architecture.png)
 
-The data originates from multiple operational systems and departmental files, including:  
--
--
--
-
-All source data is stored as **CSV and Excel files**.
+The warehouse is organized into three layers, each with a specific role in the data life cycle.
 
 ---
 
-## ETL and Data Modeling Workflow
+## Bronze Layer – Raw Data
 
-| Step | Layer  | Description                                       | Input         | Output            | Tools        |
-| ---- | ------ | ------------------------------------------------- | ------------- | ----------------- | ------------ |
-| 1    | Bronze | Load raw CSV and Excel files into staging tables  | Source files  | Bronze tables     | SSMS, Python |
-| 2    | Bronze | Add metadata columns (load_date, file_name)       | Raw data      | Audited tables    | SQL          |
-| 3    | Silver | Clean, validate, and standardize columns          | Bronze tables | Cleaned tables    | SQL          |
-| 4    | Silver | Parse product names into attributes               | Bronze tables | Structured tables | SQL          |
-| 5    | Silver | Remove duplicates and handle missing values       | Bronze tables | Quality tables    | SQL          |
-| 6    | Gold   | Create fact_sales table                           | Silver tables | Fact table        | SQL          |
-| 7    | Gold   | Build dimension tables (product, date, customer)  | Silver tables | Dim tables        | SQL          |
-| 8    | Gold   | Create dashboards for KPIs and performance trends | Gold tables   | Dashboards        | Power BI     |
+**Source Systems:**  
+CRM and ERP files delivered as CSV and Excel, stored in shared folders and loaded through SQL Server Management Studio.
 
----
+**Characteristics:**  
+- Raw data loaded with no transformations  
+- Full Load using Batch Processing  
+- Truncate and Insert load pattern  
+- Metadata such as load date and file name added  
 
-## Business Impact
-
-The data warehouse enables AdventureWorks Sports to:
-
-- Monitor product performance and sales trends across time periods.  
-- Identify best-selling products and underperforming categories.  
-- Track inventory levels and forecast restocking needs.  
-- Understand customer purchasing patterns and seasonal demand.  
-
-These insights support better inventory planning, targeted marketing, and executive decision-making.
+**Purpose:**  
+Serve as the unmodified source-of-truth layer for auditing, rollback, and quality checks.
 
 ---
 
-## Learning Outcomes
+## Silver Layer – Cleaned and Standardized Data
 
-This project demonstrates end-to-end capabilities in:
+This layer applies all data cleaning and validation logic before business modeling.
 
-- **SQL Development and Query Optimization**  
-- **ETL Pipeline Design (Extract, Transform, Load)**  
-- **Data Modeling (Star Schema, Fact and Dimension Tables)**  
-- **Data Quality and Validation Techniques**  
-- **Business Intelligence and  Reporting**
+**Transformations Performed:**  
+1. Data cleaning  
+2. Standardization  
+3. Normalization  
+4. Derived fields  
+5. Data enrichment  
+6. Duplicate handling  
+7. Data validation  
 
+**Data Quality Checks:**  
+- Null or duplicate primary keys  
+- Inconsistent text formats and extra spaces  
+- Invalid or illogical date values  
+- Relationship mismatches  
+- Data type inconsistencies  
+
+**Purpose:**  
+Provide trusted, consistent, and analytics-ready data for the Gold layer.
 
 ---
 
-## Tools and Technologies
+## Gold Layer – Business Ready Models
 
-- **SQL Server Express** – Database engine for data storage and processing  
-- **SQL Server Management Studio (SSMS)** – Interface for managing and executing scripts  
-- **GitHub** – Version control and collaboration  
+This layer reshapes cleaned Silver data into fact and dimension tables.
+
+**Modeling Approach:**  
+- Star schema  
+- Flat presentation views  
+- Aggregated KPI tables  
+- Business rule application  
+
+**Purpose:**  
+Deliver curated, business-friendly datasets optimized for analytics, reporting, KPIs, and dashboarding.
+
+---
+
+# Data Modeling Process
+
+### 1. Conceptual Model  
+Identify main business entities and requirements such as Customer, Product, Sales, and Date.
+
+### 2. Logical Model  
+Define table relationships, grain, primary keys, surrogate keys, and dimensional structures.
+
+### 3. Physical Model  
+Implement schema in SQL Server with correct data types, constraints, indexes, and naming standards; optimize for performance.
+
+---
+
+# ETL Pipeline Summary
+
+| Step | Layer  | Description                     | Input      | Output            | Tools |
+|------|--------|---------------------------------|------------|-------------------|-------|
+| 1    | Bronze | Load raw files                  | CSV, Excel | Staging tables    | SSMS  |
+| 2    | Bronze | Add metadata                    | Raw data   | Audited data      | SQL   |
+| 3    | Silver | Clean, validate, normalize      | Bronze     | Clean tables      | SQL   |
+| 4    | Silver | Parse attributes, enrich data   | Bronze     | Structured tables | SQL   |
+| 5    | Silver | Remove duplicates, fix values   | Bronze     | Trusted data      | SQL   |
+| 6    | Gold   | Create fact_sales               | Silver     | Fact table        | SQL   |
+| 7    | Gold   | Build dim tables                | Silver     | Dimensions        | SQL   |
+
+---
+
+# Repository Structure
+📦 sports-data-warehouse
+┣ 📂 bronze
+┣ 📂 silver
+┣ 📂 gold
+┣ 📂 sql_scripts
+┣ 📂 documentation
+┣ 📄 README.md
+
+# Key Features of This Project
+
+- Fully SQL-driven data pipeline  
+- Clear implementation of Medallion Architecture  
+- Clean, normalized, enriched data  
+- Dimensional modeling using star schema  
+- Business-ready fact and dimension tables  
+- Documented transformations and validation checks  
+- Realistic workflows that match industry standards  
+
+---
+
+# What This Warehouse Enables
+
+- Analysis of customer behavior and profiles  
+- Tracking sales across dates, products, and customer segments  
+- Product performance evaluation  
+- KPI and trend monitoring  
+- Power BI or dashboard integration  
+- Structured reporting foundation for forecasting  
+
+---
+
+# About Me
+
+
+Hi, I’m **Hadil**. 😊  
+I work in data because I genuinely enjoy it — the challenges, the patterns, the problem-solving, and the satisfaction of turning raw chaos into something clean and meaningful.
+
+I’m always learning and building new things, and I like exploring how data fits together to tell a clear story.  
+Projects like this one help me sharpen my skills, experiment with ideas, and push my understanding of real-world data engineering.
+
+
 
 
 
